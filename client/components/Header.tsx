@@ -101,12 +101,12 @@ export default function Header() {
             />
 
             {/* Sidebar */}
-            <div className="fixed left-0 top-16 bottom-0 w-64 bg-card border-r border-border md:hidden z-50 animate-slideInLeft shadow-lg flex flex-col">
+            <div className="fixed left-0 top-16 bottom-0 w-64 bg-slate-800 border-r border-slate-700 md:hidden z-50 animate-slideInLeft shadow-lg flex flex-col">
               <nav className="p-4 space-y-3 overflow-y-auto flex-1">
                 <Link
                   to="/"
                   onClick={closeSidebar}
-                  className="flex items-center gap-3 w-full px-4 py-3 text-foreground font-semibold hover:bg-muted rounded-lg transition-colors"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-gray-300 font-semibold hover:bg-slate-700 hover:text-white rounded-lg transition-colors"
                 >
                   <HomeIcon className="w-5 h-5" />
                   Home
@@ -114,7 +114,7 @@ export default function Header() {
                 <Link
                   to="/dox-anyone"
                   onClick={closeSidebar}
-                  className="flex items-center gap-3 w-full px-4 py-3 text-yellow-500 font-semibold hover:bg-yellow-500/10 rounded-lg transition-colors bg-yellow-500/5"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-white font-semibold hover:bg-blue-600 rounded-lg transition-colors bg-blue-600/20"
                 >
                   🔍 Dox Anyone
                 </Link>
