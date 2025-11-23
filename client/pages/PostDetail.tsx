@@ -179,12 +179,14 @@ export default function PostDetail() {
                         ) : file.type.startsWith("audio/") ? (
                           <div className="w-full h-64 bg-muted flex items-center justify-center">
                             <audio
-                              src={file.url}
                               controls
                               preload="metadata"
                               crossOrigin="anonymous"
                               className="w-full"
-                            />
+                            >
+                              <source src={file.url} type={file.type} />
+                              Your browser does not support the audio tag.
+                            </audio>
                           </div>
                         ) : (
                           <div className="w-full h-64 bg-muted flex items-center justify-center">
