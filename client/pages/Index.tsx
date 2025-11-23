@@ -770,7 +770,7 @@ export default function Index() {
             </>
           ) : (
             <div className="text-center py-16 animate-fadeIn">
-              <p className="text-muted-foreground text-base sm:text-lg">
+              <p className="text-gray-400 text-base sm:text-lg">
                 No posts match your search criteria. Try adjusting your filters.
               </p>
             </div>
