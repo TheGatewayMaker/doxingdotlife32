@@ -11,13 +11,13 @@ export default function DoxAnyone() {
     <div className="min-h-screen bg-background text-foreground flex flex-col animate-fadeIn">
       <Header />
       <main className="flex-1 w-full">
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
           {/* Header Section */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
+          <div className="text-center mb-10 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 sm:mb-4 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
               Dox Anyone
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
               Expose individuals publicly on our platform
             </p>
           </div>
