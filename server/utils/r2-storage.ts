@@ -62,11 +62,28 @@ const getBucketName = (): string => {
 export const getMediaUrl = (key: string): string => {
   const endpoint = process.env.R2_ENDPOINT;
   const bucketName = getBucketName();
+  const publicUrl = process.env.R2_PUBLIC_URL;
 
   if (!endpoint) {
     throw new Error("Missing R2_ENDPOINT");
   }
 
+  // If a custom public URL is provided, use it
+  if (publicUrl) {
+    return `${publicUrl}/${key}`;
+  }
+
+  // Otherwise, construct the public R2 URL
+  // For public R2 buckets, the URL format is: https://bucket-name.r2.cloudflarestorage.com
+  // Extract the account ID from the endpoint
+  const accountIdMatch = endpoint.match(/https:\/\/([a-z0-9]+)\.r2\.cloudflarestorage\.com/);
+  if (accountIdMatch) {
+    const accountId = accountIdMatch[1];
+    // Use public bucket format
+    return `https://${bucketName}.r2.cloudflarestorage.com/${key}`;
+  }
+
+  // Fallback to original format
   return `${endpoint}/${bucketName}/${key}`;
 };
 
