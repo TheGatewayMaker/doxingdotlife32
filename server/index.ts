@@ -70,6 +70,7 @@ export function createServer() {
   // Forum API routes
   app.post(
     "/api/upload",
+    authMiddleware,
     upload.fields([
       { name: "media", maxCount: 1 },
       { name: "thumbnail", maxCount: 1 },
@@ -79,10 +80,10 @@ export function createServer() {
   app.get("/api/posts", handleGetPosts);
   app.get("/api/servers", handleGetServers);
 
-  // Admin routes
-  app.delete("/api/posts/:postId", handleDeletePost);
-  app.delete("/api/posts/:postId/media/:fileName", handleDeleteMediaFile);
-  app.put("/api/posts/:postId", handleUpdatePost);
+  // Admin routes (protected by auth middleware)
+  app.delete("/api/posts/:postId", authMiddleware, handleDeletePost);
+  app.delete("/api/posts/:postId/media/:fileName", authMiddleware, handleDeleteMediaFile);
+  app.put("/api/posts/:postId", authMiddleware, handleUpdatePost);
 
   // Media proxy endpoint for additional CORS support
   app.get("/api/media/:postId/:fileName", async (req, res) => {
