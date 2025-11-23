@@ -107,8 +107,8 @@ export default function UppostPanel() {
     setServer("");
     setThumbnail(null);
     setThumbnailPreview("");
-    setMedia(null);
-    setMediaPreview("");
+    setMediaFiles([]);
+    setMediaPreviews([]);
     setUploadMessage("");
     setUploadError("");
   };
