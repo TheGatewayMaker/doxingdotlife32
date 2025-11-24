@@ -46,10 +46,14 @@ export default function UppostPanel() {
   };
 
   const handleLogout = async () => {
-    await logout();
-    setLoginUsername("");
-    setLoginPassword("");
-    resetForm();
+    try {
+      await logout();
+      toast.success("Successfully signed out");
+      resetForm();
+    } catch (error) {
+      toast.error("Error signing out. Please try again.");
+      console.error("Logout error:", error);
+    }
   };
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
