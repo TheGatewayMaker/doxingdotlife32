@@ -9,7 +9,7 @@
   memory = 3008
   timeout = 60
 
-[[function]]
+[[functions]]
   name = "api"
   memory = 3008
   timeout = 60
