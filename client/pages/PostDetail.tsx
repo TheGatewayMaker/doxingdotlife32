@@ -151,8 +151,8 @@ export default function PostDetail() {
                 <div>
                   <p className="font-semibold text-red-400">NSFW Content</p>
                   <p className="text-sm text-red-300/80">
-                    This is NSFW content. Ensure you're viewing in an appropriate
-                    setting.
+                    This is NSFW content. Ensure you're viewing in an
+                    appropriate setting.
                   </p>
                 </div>
               </div>
@@ -183,7 +183,10 @@ export default function PostDetail() {
             )}
 
             {/* Title */}
-            <div className="mb-6 animate-fadeIn" style={{ animationDelay: "0.1s" }}>
+            <div
+              className="mb-6 animate-fadeIn"
+              style={{ animationDelay: "0.1s" }}
+            >
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 text-foreground leading-tight">
                 {post.title}
               </h1>
@@ -202,7 +205,10 @@ export default function PostDetail() {
             </div>
 
             {/* Description Section */}
-            <div className="mb-10 animate-fadeIn" style={{ animationDelay: "0.2s" }}>
+            <div
+              className="mb-10 animate-fadeIn"
+              style={{ animationDelay: "0.2s" }}
+            >
               <PostDescriptionSection
                 description={post.description}
                 tags={{
@@ -215,7 +221,10 @@ export default function PostDetail() {
 
             {/* Media Section */}
             {post.mediaFiles && post.mediaFiles.length > 0 && (
-              <div className="mb-10 animate-fadeIn" style={{ animationDelay: "0.3s" }}>
+              <div
+                className="mb-10 animate-fadeIn"
+                style={{ animationDelay: "0.3s" }}
+              >
                 <PostMediaSection
                   mediaFiles={post.mediaFiles}
                   postTitle={post.title}
@@ -225,7 +234,10 @@ export default function PostDetail() {
             )}
 
             {/* Share Button */}
-            <div className="border-t border-border pt-8 animate-fadeIn" style={{ animationDelay: "0.4s" }}>
+            <div
+              className="border-t border-border pt-8 animate-fadeIn"
+              style={{ animationDelay: "0.4s" }}
+            >
               <button
                 onClick={handleShare}
                 className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground font-bold rounded-lg hover:bg-accent/90 transition-all shadow-md hover:shadow-lg active:scale-95"

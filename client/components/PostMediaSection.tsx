@@ -242,7 +242,10 @@ export default function PostMediaSection({
                   crossOrigin="anonymous"
                   playsInline
                 >
-                  <source src={videos[selectedVideoIndex].url} type={videos[selectedVideoIndex].type} />
+                  <source
+                    src={videos[selectedVideoIndex].url}
+                    type={videos[selectedVideoIndex].type}
+                  />
                   Your browser does not support the video tag.
                 </video>
               </div>
