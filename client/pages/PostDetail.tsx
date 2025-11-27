@@ -99,11 +99,30 @@ export default function PostDetail() {
     );
   }
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      // Show success feedback (you can add a toast notification here)
+      alert("Link copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy URL:", err);
+      // Fallback: open the native share dialog if copy fails
+      if (navigator.share) {
+        navigator.share({
+          title: post.title,
+          text: post.description.substring(0, 100),
+          url: url,
+        });
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col animate-fadeIn">
       <Header />
       <main className="flex-1 w-full">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {/* Back Button */}
           <button
             onClick={() => navigate("/")}
@@ -209,21 +228,14 @@ export default function PostDetail() {
                 <SimpleMediaGallery
                   mediaFiles={post.mediaFiles}
                   postTitle={post.title}
+                  thumbnailUrl={post.thumbnail}
                 />
               )}
 
               {/* Share Button */}
               <div className="border-t border-border pt-6 sm:pt-8 mt-10 sm:mt-12">
                 <button
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: post.title,
-                        text: post.description.substring(0, 100),
-                        url: window.location.href,
-                      });
-                    }
-                  }}
+                  onClick={handleShare}
                   className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground font-bold rounded-lg hover:bg-accent/90 transition-all shadow-md hover:shadow-lg active:scale-95"
                 >
                   <Share2 className="w-5 h-5" />

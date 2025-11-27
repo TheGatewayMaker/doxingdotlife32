@@ -11,6 +11,7 @@ interface SimpleMediaGalleryProps {
   mediaFiles: MediaFile[];
   postTitle: string;
   thumbnails?: { [key: string]: string };
+  thumbnailUrl?: string;
 }
 
 const getMediaIcon = (type: string): string => {
@@ -24,15 +25,21 @@ export default function SimpleMediaGallery({
   mediaFiles,
   postTitle,
   thumbnails = {},
+  thumbnailUrl,
 }: SimpleMediaGalleryProps) {
+  // Filter out the thumbnail from the media files
+  const filteredMediaFiles = mediaFiles.filter(
+    (file) => !thumbnailUrl || file.url !== thumbnailUrl,
+  );
+
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const mediaContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  if (mediaFiles.length === 0) return null;
+  if (filteredMediaFiles.length === 0) return null;
 
-  const currentMedia = mediaFiles[selectedMediaIndex];
+  const currentMedia = filteredMediaFiles[selectedMediaIndex];
   const isImage = currentMedia.type.startsWith("image/");
   const isVideo = currentMedia.type.startsWith("video/");
   const isAudio = currentMedia.type.startsWith("audio/");
@@ -54,15 +61,15 @@ export default function SimpleMediaGallery({
   };
 
   const handleKeyPress = (e: KeyboardEvent) => {
-    if (mediaFiles.length <= 1) return;
+    if (filteredMediaFiles.length <= 1) return;
 
     if (e.key === "ArrowLeft") {
       setSelectedMediaIndex((prev) =>
-        prev === 0 ? mediaFiles.length - 1 : prev - 1,
+        prev === 0 ? filteredMediaFiles.length - 1 : prev - 1,
       );
     } else if (e.key === "ArrowRight") {
       setSelectedMediaIndex((prev) =>
-        prev === mediaFiles.length - 1 ? 0 : prev + 1,
+        prev === filteredMediaFiles.length - 1 ? 0 : prev + 1,
       );
     } else if (
       e.key === "Escape" &&
@@ -77,7 +84,7 @@ export default function SimpleMediaGallery({
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [mediaFiles.length, isFullscreen]);
+  }, [filteredMediaFiles.length, isFullscreen]);
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -109,14 +116,15 @@ export default function SimpleMediaGallery({
         </svg>
         <h2 className="text-2xl font-bold">Attached Media</h2>
         <span className="ml-auto text-sm font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full">
-          {mediaFiles.length} file{mediaFiles.length !== 1 ? "s" : ""}
+          {filteredMediaFiles.length} file
+          {filteredMediaFiles.length !== 1 ? "s" : ""}
         </span>
       </div>
 
       {/* Thumbnail Grid */}
-      {mediaFiles.length > 1 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {mediaFiles.map((file, idx) => {
+      {filteredMediaFiles.length > 1 && (
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2">
+          {filteredMediaFiles.map((file, idx) => {
             const isImg = file.type.startsWith("image/");
             const isVid = file.type.startsWith("video/");
             const isSelected = selectedMediaIndex === idx;
@@ -170,10 +178,11 @@ export default function SimpleMediaGallery({
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         crossOrigin="anonymous"
                         preload="metadata"
+                        playsInline
                       >
                         <source src={file.url} type={file.type} />
                       </video>
-                      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center pointer-events-none">
                         <div className="text-3xl drop-shadow-lg">▶️</div>
                       </div>
                     </div>
@@ -208,7 +217,7 @@ export default function SimpleMediaGallery({
       )}
 
       {/* Current Media Preview */}
-      {mediaFiles.length > 0 && (
+      {filteredMediaFiles.length > 0 && (
         <div className="bg-muted rounded-lg overflow-hidden border border-border">
           <div
             ref={mediaContainerRef}
@@ -237,21 +246,15 @@ export default function SimpleMediaGallery({
                 <video
                   ref={videoRef}
                   controls
+                  controlsList="nodownload"
                   preload="metadata"
-                  className="w-full max-h-[500px] object-contain bg-black"
+                  className="w-full max-h-[600px] object-contain bg-black"
                   crossOrigin="anonymous"
-                  poster={thumbnails[currentMedia.name]}
+                  playsInline
                 >
                   <source src={currentMedia.url} type={currentMedia.type} />
                   Your browser does not support the video tag.
                 </video>
-                <button
-                  onClick={handleFullscreen}
-                  className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white p-2.5 rounded-lg transition-colors z-10"
-                  title="Fullscreen"
-                >
-                  <Maximize2 className="w-5 h-5" />
-                </button>
               </div>
             )}
 
@@ -273,9 +276,9 @@ export default function SimpleMediaGallery({
             )}
 
             {/* Media Counter */}
-            {mediaFiles.length > 1 && (
+            {filteredMediaFiles.length > 1 && (
               <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium">
-                {selectedMediaIndex + 1} / {mediaFiles.length}
+                {selectedMediaIndex + 1} / {filteredMediaFiles.length}
               </div>
             )}
           </div>
@@ -298,15 +301,6 @@ export default function SimpleMediaGallery({
 
             {/* Action Buttons */}
             <div className="flex gap-3 flex-wrap">
-              {isVideo && (
-                <button
-                  onClick={handleFullscreen}
-                  className="flex-1 min-w-[120px] px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                  Fullscreen
-                </button>
-              )}
               <button
                 onClick={handleOpenNewTab}
                 className="flex-1 min-w-[120px] px-4 py-2 bg-accent text-accent-foreground text-sm font-medium rounded-lg hover:bg-accent/90 transition-all"
@@ -325,12 +319,12 @@ export default function SimpleMediaGallery({
       )}
 
       {/* Navigation for multiple media files */}
-      {mediaFiles.length > 1 && (
+      {filteredMediaFiles.length > 1 && (
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
           <button
             onClick={() =>
               setSelectedMediaIndex((prev) =>
-                prev === 0 ? mediaFiles.length - 1 : prev - 1,
+                prev === 0 ? filteredMediaFiles.length - 1 : prev - 1,
               )
             }
             className="p-2.5 bg-muted hover:bg-accent hover:text-accent-foreground text-muted-foreground rounded-lg transition-all hover:scale-110 active:scale-95"
@@ -340,7 +334,7 @@ export default function SimpleMediaGallery({
           </button>
 
           <div className="flex items-center gap-3 flex-wrap justify-center">
-            {mediaFiles.map((_, idx) => (
+            {filteredMediaFiles.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setSelectedMediaIndex(idx)}
@@ -350,7 +344,7 @@ export default function SimpleMediaGallery({
                     : "bg-muted hover:bg-accent/40 w-2.5 h-2.5 hover:w-3 hover:h-3"
                 }`}
                 aria-label={`Go to media ${idx + 1}`}
-                title={`File ${idx + 1}: ${mediaFiles[idx].name}`}
+                title={`File ${idx + 1}: ${filteredMediaFiles[idx].name}`}
               />
             ))}
           </div>
@@ -358,7 +352,7 @@ export default function SimpleMediaGallery({
           <button
             onClick={() =>
               setSelectedMediaIndex((prev) =>
-                prev === mediaFiles.length - 1 ? 0 : prev + 1,
+                prev === filteredMediaFiles.length - 1 ? 0 : prev + 1,
               )
             }
             className="p-2.5 bg-muted hover:bg-accent hover:text-accent-foreground text-muted-foreground rounded-lg transition-all hover:scale-110 active:scale-95"
