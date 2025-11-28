@@ -450,11 +450,11 @@ export default function AllPosts() {
               <>
                 <h2 className="text-5xl md:text-6xl font-black mb-3 flex items-center gap-3 text-white">
                   <span className="inline-block animate-spin">
-                    <div className="w-10 h-10 border-3 border-slate-700 border-t-blue-500 rounded-full"></div>
+                    <div className="w-10 h-10 border-3 border-[#666666] border-t-[#0088CC] rounded-full"></div>
                   </span>
                   Loading Posts
                 </h2>
-                <p className="text-gray-400">
+                <p className="text-[#979797]">
                   Fetching the latest posts for you...
                 </p>
               </>
