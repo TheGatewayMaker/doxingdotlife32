@@ -579,21 +579,21 @@ export default function Index() {
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg hover:shadow-blue-500/50 active:scale-95 text-sm sm:text-base"
+                    className="px-3 sm:px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg hover:shadow-blue-500/50 active:scale-95 text-sm sm:text-base"
                   >
                     ← Prev
                   </button>
-                  <div className="flex items-center gap-1 flex-wrap justify-center">
+                  <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                       (page) => (
                         <button
                           key={page}
                           onClick={() => setCurrentPage(page)}
                           className={cn(
-                            "w-9 h-9 sm:w-10 sm:h-10 rounded-lg font-medium transition-all text-xs sm:text-sm shadow-sm hover:shadow-md",
+                            "w-8 h-8 sm:w-10 sm:h-10 rounded-lg font-semibold transition-all text-xs sm:text-sm shadow-sm hover:shadow-md",
                             currentPage === page
-                              ? "bg-blue-600 text-white"
-                              : "bg-slate-800 border border-slate-700 hover:border-slate-600 text-white",
+                              ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white"
+                              : "bg-slate-800 border border-slate-700 hover:border-blue-500/50 hover:bg-slate-700 text-gray-300",
                           )}
                         >
                           {page}
@@ -606,7 +606,7 @@ export default function Index() {
                       setCurrentPage(Math.min(totalPages, currentPage + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg hover:shadow-blue-500/50 active:scale-95 text-sm sm:text-base"
+                    className="px-3 sm:px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg hover:shadow-blue-500/50 active:scale-95 text-sm sm:text-base"
                   >
                     Next →
                   </button>
