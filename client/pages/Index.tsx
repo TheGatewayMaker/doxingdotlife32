@@ -417,7 +417,7 @@ export default function Index() {
                     )}
                   </div>
                   {serverSearch && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg z-[999] max-h-48 overflow-y-auto shadow-xl">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#1a1a1a] border border-[#666666] rounded-lg z-[999] max-h-48 overflow-y-auto shadow-xl">
                       {filteredServers.length > 0 ? (
                         filteredServers.map((server) => (
                           <button
@@ -426,13 +426,13 @@ export default function Index() {
                               setSelectedServer(server);
                               setServerSearch("");
                             }}
-                            className="w-full text-left px-4 py-2.5 hover:bg-gray-700 text-white text-sm transition-all duration-200 border-b border-gray-700/50 last:border-b-0"
+                            className="w-full text-left px-4 py-2.5 hover:bg-[#0088CC]/20 hover:border-[#0088CC] text-white text-sm transition-all duration-200 border-b border-[#666666]/50 last:border-b-0"
                           >
                             {server}
                           </button>
                         ))
                       ) : (
-                        <div className="px-4 py-3 text-gray-500 text-sm text-center">
+                        <div className="px-4 py-3 text-[#979797] text-sm text-center">
                           No servers found
                         </div>
                       )}
