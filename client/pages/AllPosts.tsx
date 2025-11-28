@@ -477,7 +477,7 @@ export default function AllPosts() {
                     All Posts
                   </h2>
                 </div>
-                <p className="text-gray-400 mt-3">
+                <p className="text-[#979797] mt-3">
                   Showing {displayedPosts.length} of {filteredPosts.length}{" "}
                   posts
                 </p>
