@@ -53,11 +53,31 @@ export default function Header() {
           </Link>
           <Link
             to="/dox-anyone"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all"
+            className="relative flex items-center gap-2 px-4 py-2 text-white font-semibold rounded-lg overflow-hidden group"
+            style={{
+              background: "linear-gradient(#1a1a2e, #1a1a2e) padding-box",
+              border: "1px solid transparent",
+            }}
           >
+            <div
+              className="absolute inset-0 rounded-lg z-[-1]"
+              style={{
+                background: "conic-gradient(from 0deg, #3b82f6, #60a5fa, #3b82f6)",
+                animation: "rotation 3s linear infinite",
+              }}
+            />
+            <div
+              className="absolute inset-[1px] rounded-lg z-[-1] bg-blue-600"
+            />
             <SearchAltIcon className="w-4 h-4" />
             Dox Anyone
           </Link>
+          <style>{`
+            @keyframes rotation {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(-360deg); }
+            }
+          `}</style>
           {isAuthenticated && (
             <>
               <Link
