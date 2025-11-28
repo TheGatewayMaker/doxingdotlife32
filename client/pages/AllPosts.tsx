@@ -347,7 +347,7 @@ export default function AllPosts() {
                       }
                       value={countrySearch}
                       onChange={(e) => setCountrySearch(e.target.value)}
-                      className="w-full px-4 py-3 pr-10 bg-slate-800 border border-slate-700 hover:border-blue-500 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all shadow-sm hover:shadow-md hover:shadow-blue-500/20"
+                      className="w-full px-4 py-3 pr-10 bg-[#1a1a1a] border border-[#666666] hover:border-[#0088CC] rounded-lg text-white placeholder-[#979797] focus:outline-none focus:ring-2 focus:ring-[#0088CC] focus:border-[#0088CC] text-sm transition-all shadow-sm hover:shadow-md hover:shadow-[#0088CC]/20"
                     />
                     {selectedCountry && (
                       <button
