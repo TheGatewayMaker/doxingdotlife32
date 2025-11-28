@@ -289,14 +289,11 @@ export default function AdminPanel() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-fadeIn" style={{ animationDelay: "0.1s" }}>
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-2 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg shadow-xl">
-                  <EditIcon className="w-5 h-5 text-white" />
-                </div>
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
                     Admin Panel
                   </h1>
-                  <p className="text-xs sm:text-sm font-semibold text-muted-foreground mt-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                     Manage your posts
                   </p>
                 </div>
