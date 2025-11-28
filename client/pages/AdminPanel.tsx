@@ -117,6 +117,7 @@ export default function AdminPanel() {
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countrySearch, setCountrySearch] = useState("");
 
