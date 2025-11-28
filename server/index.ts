@@ -63,6 +63,27 @@ export function createServer() {
   app.get("/api/auth/check", handleCheckAuth);
 
   // Forum API routes
+  // Upload endpoint with longer timeout for handling large files
+  const uploadRouter = express.Router();
+  uploadRouter.post(
+    "/api/upload",
+    authMiddleware,
+    upload.fields([
+      { name: "media", maxCount: 100 }, // Support up to 100 files
+      { name: "thumbnail", maxCount: 1 },
+    ]),
+    handleUpload,
+  );
+
+  app.use((req, res, next) => {
+    // Set longer timeout for upload endpoint (5 minutes)
+    if (req.path === "/api/upload") {
+      req.setTimeout(5 * 60 * 1000);
+      res.setTimeout(5 * 60 * 1000);
+    }
+    next();
+  });
+
   app.post(
     "/api/upload",
     authMiddleware,
