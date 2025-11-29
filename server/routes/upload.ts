@@ -19,20 +19,21 @@ interface UploadRequest {
 const sanitizeFileName = (fileName: string): string => {
   // Remove path separators and dangerous characters
   let sanitized = fileName
-    .replace(/\\/g, '') // Remove backslashes
-    .replace(/\//g, '') // Remove forward slashes
-    .replace(/\0/g, '') // Remove null bytes
-    .replace(/[<>:"|?*]/g, '') // Remove Windows reserved chars
+    .replace(/\\/g, "") // Remove backslashes
+    .replace(/\//g, "") // Remove forward slashes
+    .replace(/\0/g, "") // Remove null bytes
+    .replace(/[<>:"|?*]/g, "") // Remove Windows reserved chars
     .trim();
 
   // Ensure it's not empty and not a reserved name
-  if (!sanitized || sanitized === '.' || sanitized === '..') {
-    return 'file';
+  if (!sanitized || sanitized === "." || sanitized === "..") {
+    return "file";
   }
 
   // Limit filename length to prevent issues
   if (sanitized.length > 255) {
-    sanitized = sanitized.substring(0, 240) + sanitized.substring(sanitized.length - 15);
+    sanitized =
+      sanitized.substring(0, 240) + sanitized.substring(sanitized.length - 15);
   }
 
   return sanitized;
@@ -102,12 +103,10 @@ export const handleUpload: RequestHandler = async (req, res, next) => {
         thumbnail: !!files?.thumbnail,
       });
       if (!res.headersSent) {
-        res
-          .status(400)
-          .json({
-            error:
-              "Missing required fields: title, description, media files, and thumbnail are all required",
-          });
+        res.status(400).json({
+          error:
+            "Missing required fields: title, description, media files, and thumbnail are all required",
+        });
         responseSent = true;
       }
       return;
@@ -262,7 +261,9 @@ export const handleUpload: RequestHandler = async (req, res, next) => {
 
           // Ensure servers is an array before spreading
           if (!Array.isArray(servers)) {
-            console.warn("Servers list is not an array, initializing with empty array");
+            console.warn(
+              "Servers list is not an array, initializing with empty array",
+            );
             await updateServersList([server.trim()]);
           } else {
             const serverSet = new Set(servers);

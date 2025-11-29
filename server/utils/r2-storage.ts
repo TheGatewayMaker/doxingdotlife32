@@ -284,14 +284,18 @@ export const getPostMetadata = async (
       const parsed = JSON.parse(bodyString);
 
       // Validate required fields
-      if (typeof parsed !== 'object' || parsed === null || !parsed.id) {
-        console.warn(`Invalid post metadata for ${postId}: missing required fields`);
+      if (typeof parsed !== "object" || parsed === null || !parsed.id) {
+        console.warn(
+          `Invalid post metadata for ${postId}: missing required fields`,
+        );
         return null;
       }
 
       // Validate that mediaFiles is an array if present
       if (parsed.mediaFiles && !Array.isArray(parsed.mediaFiles)) {
-        console.warn(`Invalid mediaFiles in metadata for ${postId}: not an array`);
+        console.warn(
+          `Invalid mediaFiles in metadata for ${postId}: not an array`,
+        );
         parsed.mediaFiles = [];
       }
 
@@ -391,14 +395,20 @@ export const getServersList = async (): Promise<string[]> => {
 
       // Validate that the parsed data is actually an array
       if (!Array.isArray(parsed)) {
-        console.warn(`Servers list JSON is not an array, received: ${typeof parsed}, returning empty list`);
+        console.warn(
+          `Servers list JSON is not an array, received: ${typeof parsed}, returning empty list`,
+        );
         return [];
       }
 
       // Filter to ensure all items are strings
-      const validServers = parsed.filter((item): item is string => typeof item === 'string');
+      const validServers = parsed.filter(
+        (item): item is string => typeof item === "string",
+      );
       if (validServers.length !== parsed.length) {
-        console.warn(`Servers list contained non-string items, filtered to ${validServers.length} valid entries`);
+        console.warn(
+          `Servers list contained non-string items, filtered to ${validServers.length} valid entries`,
+        );
       }
 
       return validServers;
@@ -407,7 +417,9 @@ export const getServersList = async (): Promise<string[]> => {
     return [];
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.warn(`Error reading servers list: ${errorMsg}, returning empty list`);
+    console.warn(
+      `Error reading servers list: ${errorMsg}, returning empty list`,
+    );
     return [];
   }
 };
@@ -504,7 +516,9 @@ export const deleteMediaFile = async (
     // Ensure mediaFiles is an array before filtering
     let mediaFiles = metadata.mediaFiles || [];
     if (!Array.isArray(mediaFiles)) {
-      console.warn(`mediaFiles for post ${postId} is not an array, treating as empty`);
+      console.warn(
+        `mediaFiles for post ${postId} is not an array, treating as empty`,
+      );
       mediaFiles = [];
     }
 

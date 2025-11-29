@@ -13,17 +13,21 @@ import { Post } from "@shared/api";
  * Validates file path to prevent directory traversal attacks
  */
 const isValidFilePath = (filePath: string): boolean => {
-  if (!filePath || typeof filePath !== 'string') {
+  if (!filePath || typeof filePath !== "string") {
     return false;
   }
 
   // Check for path traversal attempts
-  if (filePath.includes('..') || filePath.includes('/') || filePath.includes('\\')) {
+  if (
+    filePath.includes("..") ||
+    filePath.includes("/") ||
+    filePath.includes("\\")
+  ) {
     return false;
   }
 
   // Check for null bytes
-  if (filePath.includes('\0')) {
+  if (filePath.includes("\0")) {
     return false;
   }
 
@@ -83,7 +87,9 @@ export const handleDeleteMediaFile: RequestHandler = async (req, res) => {
 
     // Validate both postId and fileName to prevent path traversal
     if (!isValidFilePath(postId) || !isValidFilePath(fileName)) {
-      console.warn(`Invalid path detected - postId: ${postId}, fileName: ${fileName}`);
+      console.warn(
+        `Invalid path detected - postId: ${postId}, fileName: ${fileName}`,
+      );
       res.status(403).json({ error: "Invalid file path" });
       return;
     }

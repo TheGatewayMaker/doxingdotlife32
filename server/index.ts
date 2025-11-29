@@ -262,7 +262,11 @@ export function createServer() {
       }
 
       // Validate that only legitimate paths are accessed
-      if (fileName.includes("..") || fileName.includes("/") || fileName.includes("\\")) {
+      if (
+        fileName.includes("..") ||
+        fileName.includes("/") ||
+        fileName.includes("\\")
+      ) {
         return res.status(403).json({ error: "Invalid file path" });
       }
 
