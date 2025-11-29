@@ -125,32 +125,44 @@ export function createServer() {
     res: express.Response,
     next: express.NextFunction,
   ) => {
+    // In serverless environments like Netlify Functions, sockets are not available
+    // Skip socket timeout handling in serverless contexts
+    if (process.env.NETLIFY === "true" || !req.socket) {
+      console.log("Serverless environment detected: skipping socket timeout");
+      next();
+      return;
+    }
+
     const timeout = 10 * 60 * 1000; // 10 minutes
 
     // Set timeout on the underlying socket, not the request/response objects
-    if (req.socket) {
-      req.socket.setTimeout(timeout);
-    }
-    if (res.socket) {
-      res.socket.setTimeout(timeout);
-    }
-
-    // Handle timeout errors
-    const handleTimeout = () => {
-      console.error("Request timeout for upload");
-      if (!res.headersSent) {
-        res.status(408).json({
-          error: "Request timeout",
-          details: "Upload took too long to complete",
-        });
+    try {
+      if (req.socket) {
+        req.socket.setTimeout(timeout);
       }
-    };
+      if (res.socket) {
+        res.socket.setTimeout(timeout);
+      }
 
-    if (req.socket) {
-      req.socket.on("timeout", handleTimeout);
-    }
-    if (res.socket) {
-      res.socket.on("timeout", handleTimeout);
+      // Handle timeout errors
+      const handleTimeout = () => {
+        console.error("Request timeout for upload");
+        if (!res.headersSent) {
+          res.status(408).json({
+            error: "Request timeout",
+            details: "Upload took too long to complete",
+          });
+        }
+      };
+
+      if (req.socket) {
+        req.socket.on("timeout", handleTimeout);
+      }
+      if (res.socket) {
+        res.socket.on("timeout", handleTimeout);
+      }
+    } catch (error) {
+      console.error("Error setting socket timeout:", error);
     }
 
     next();
@@ -193,15 +205,20 @@ export function createServer() {
     uploadTimeout,
     authMiddleware,
     (req, res, next) => {
-      upload.fields([
-        { name: "media", maxCount: 100 },
-        { name: "thumbnail", maxCount: 1 },
-      ])(req, res, (err) => {
-        if (err) {
-          return multerErrorHandler(err, req, res, next);
-        }
-        next();
-      });
+      try {
+        upload.fields([
+          { name: "media", maxCount: 100 },
+          { name: "thumbnail", maxCount: 1 },
+        ])(req, res, (err) => {
+          if (err) {
+            return multerErrorHandler(err, req, res, next);
+          }
+          next();
+        });
+      } catch (error) {
+        console.error("Error in upload middleware:", error);
+        return multerErrorHandler(error, req, res, next);
+      }
     },
     handleUpload,
   );
