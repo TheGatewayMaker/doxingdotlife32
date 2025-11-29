@@ -187,8 +187,8 @@ export default function PostDetail() {
                 />
               )}
 
-              {/* Share and Delete Buttons */}
-              <div className="border-t border-border pt-6 sm:pt-8 mt-10 sm:mt-12 flex flex-col sm:flex-row gap-3">
+              {/* Share Button */}
+              <div className="border-t border-border pt-6 sm:pt-8 mt-10 sm:mt-12">
                 <button
                   onClick={() => {
                     if (navigator.share) {
@@ -199,18 +199,10 @@ export default function PostDetail() {
                       });
                     }
                   }}
-                  className="flex items-center justify-center gap-2 px-6 py-3 bg-accent text-accent-foreground font-bold rounded-lg hover:bg-accent/90 transition-all shadow-md hover:shadow-lg active:scale-95"
+                  className="flex items-center gap-2 px-6 py-3 bg-accent text-accent-foreground font-bold rounded-lg hover:bg-accent/90 transition-all shadow-md hover:shadow-lg active:scale-95"
                 >
                   <Share2 className="w-5 h-5" />
                   Share Post
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="flex items-center justify-center gap-2 px-6 py-3 bg-destructive text-destructive-foreground font-bold rounded-lg hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg active:scale-95"
-                >
-                  <Trash2 className="w-5 h-5" />
-                  {deleting ? "Deleting..." : "Delete Post"}
                 </button>
               </div>
             </div>
