@@ -25,49 +25,145 @@ export const handleGenerateUploadUrls: RequestHandler = async (
 ) => {
   try {
     console.log(
+      `[${new Date().toISOString()}] === 📤 GENERATE UPLOAD URLS REQUEST ===`,
+    );
+    console.log(`[${new Date().toISOString()}] Request method: ${req.method}`);
+    console.log(`[${new Date().toISOString()}] Request path: ${req.path}`);
+    console.log(
+      `[${new Date().toISOString()}] Content-Type header: ${req.headers["content-type"]}`,
+    );
+    console.log(
+      `[${new Date().toISOString()}] Content-Length header: ${req.headers["content-length"]}`,
+    );
+    console.log(
       `[${new Date().toISOString()}] Request body type: ${typeof req.body}`,
     );
+
+    if (!req.body) {
+      console.error(
+        `[${new Date().toISOString()}] ❌ REQUEST BODY IS EMPTY/NULL`,
+      );
+      return res.status(400).json({
+        error: "Invalid request",
+        details: "Request body is empty",
+      });
+    }
+
     console.log(
-      `[${new Date().toISOString()}] Request body content: ${JSON.stringify(req.body).substring(0, 500)}`,
+      `[${new Date().toISOString()}] Request body keys: ${Object.keys(req.body)}`,
     );
+
+    if (typeof req.body === "string") {
+      console.warn(
+        `[${new Date().toISOString()}] ⚠️ Body is still a string, attempting parse...`,
+      );
+      try {
+        req.body = JSON.parse(req.body);
+        console.log(
+          `[${new Date().toISOString()}] ✅ Successfully parsed string body`,
+        );
+      } catch (parseErr) {
+        console.error(
+          `[${new Date().toISOString()}] ❌ Failed to parse string body:`,
+          parseErr,
+        );
+        return res.status(400).json({
+          error: "Invalid JSON in request body",
+          details:
+            parseErr instanceof Error ? parseErr.message : "JSON parse error",
+        });
+      }
+    }
+
     console.log(
-      `[${new Date().toISOString()}] Request headers: ${JSON.stringify(req.headers)}`,
+      `[${new Date().toISOString()}] Full request body: ${JSON.stringify(req.body, null, 2).substring(0, 1000)}`,
     );
 
     const { files } = req.body as GenerateUrlsRequest;
 
-    console.log(`[${new Date().toISOString()}] Received files: ${files}`);
-    console.log(
-      `[${new Date().toISOString()}] Files type: ${typeof files}, is array: ${Array.isArray(files)}, length: ${files?.length}`,
-    );
+    if (files) {
+      console.log(`[${new Date().toISOString()}] Files received:`, {
+        isArray: Array.isArray(files),
+        length: files.length,
+        firstFile: files[0],
+      });
+    }
 
     if (!files || !Array.isArray(files) || files.length === 0) {
-      console.error(`[${new Date().toISOString()}] Files validation failed:`, {
-        haFiles: !!files,
-        isArray: Array.isArray(files),
-        length: files?.length,
-        rawBody: req.body,
-      });
+      console.error(
+        `[${new Date().toISOString()}] ❌ FILES VALIDATION FAILED:`,
+        {
+          hasFilesProperty: "files" in (req.body || {}),
+          filesValue: req.body?.files,
+          isArray: Array.isArray(files),
+          length: files?.length,
+          allBodyKeys: Object.keys(req.body || {}),
+          fullBody: JSON.stringify(req.body),
+        },
+      );
       return res.status(400).json({
         error: "Invalid request",
         details: "files array is required and must contain at least one file",
+        debug: {
+          receivedKeys: Object.keys(req.body || {}),
+          filesProperty: req.body?.files,
+          bodyType: typeof req.body,
+        },
       });
     }
 
     // Validate each file in the request
-    for (const file of files) {
-      if (!file.fileName || !file.contentType || !file.fileSize) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      console.log(`[${new Date().toISOString()}] Validating file ${i}:`, {
+        fileKeys: Object.keys(file || {}),
+        file: file,
+      });
+
+      if (!file) {
         return res.status(400).json({
           error: "Invalid file metadata",
-          details:
-            "Each file must have fileName, contentType, and fileSize properties",
+          details: `File at index ${i} is null or undefined`,
         });
       }
 
-      if (file.fileSize > 500 * 1024 * 1024) {
+      const { fileName, contentType, fileSize } = file as any;
+
+      if (!fileName || typeof fileName !== "string" || fileName.trim() === "") {
+        return res.status(400).json({
+          error: "Invalid file metadata",
+          details: `File ${i}: fileName must be a non-empty string. Received: ${JSON.stringify(fileName)}`,
+        });
+      }
+
+      if (
+        !contentType ||
+        typeof contentType !== "string" ||
+        contentType.trim() === ""
+      ) {
+        return res.status(400).json({
+          error: "Invalid file metadata",
+          details: `File ${i} (${fileName}): contentType must be a non-empty string. Received: ${JSON.stringify(contentType)}`,
+        });
+      }
+
+      if (
+        fileSize === undefined ||
+        fileSize === null ||
+        typeof fileSize !== "number" ||
+        fileSize <= 0
+      ) {
+        return res.status(400).json({
+          error: "Invalid file metadata",
+          details: `File ${i} (${fileName}): fileSize must be a positive number. Received: ${JSON.stringify(fileSize)}`,
+        });
+      }
+
+      if (fileSize > 500 * 1024 * 1024) {
         return res.status(400).json({
           error: "File too large",
-          details: `File ${file.fileName} exceeds 500MB limit`,
+          details: `File ${fileName} (${(fileSize / 1024 / 1024).toFixed(2)}MB) exceeds 500MB limit`,
         });
       }
     }
