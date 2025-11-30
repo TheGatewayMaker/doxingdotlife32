@@ -67,19 +67,48 @@ export const handleGenerateUploadUrls: RequestHandler = async (
     }
 
     // Validate each file in the request
-    for (const file of files) {
-      if (!file.fileName || !file.contentType || !file.fileSize) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      console.log(`[${new Date().toISOString()}] Validating file ${i}:`, {
+        fileKeys: Object.keys(file || {}),
+        file: file,
+      });
+
+      if (!file) {
         return res.status(400).json({
           error: "Invalid file metadata",
-          details:
-            "Each file must have fileName, contentType, and fileSize properties",
+          details: `File at index ${i} is null or undefined`,
         });
       }
 
-      if (file.fileSize > 500 * 1024 * 1024) {
+      const { fileName, contentType, fileSize } = file as any;
+
+      if (!fileName || typeof fileName !== "string" || fileName.trim() === "") {
+        return res.status(400).json({
+          error: "Invalid file metadata",
+          details: `File ${i}: fileName must be a non-empty string. Received: ${JSON.stringify(fileName)}`,
+        });
+      }
+
+      if (!contentType || typeof contentType !== "string" || contentType.trim() === "") {
+        return res.status(400).json({
+          error: "Invalid file metadata",
+          details: `File ${i} (${fileName}): contentType must be a non-empty string. Received: ${JSON.stringify(contentType)}`,
+        });
+      }
+
+      if (fileSize === undefined || fileSize === null || typeof fileSize !== "number" || fileSize <= 0) {
+        return res.status(400).json({
+          error: "Invalid file metadata",
+          details: `File ${i} (${fileName}): fileSize must be a positive number. Received: ${JSON.stringify(fileSize)}`,
+        });
+      }
+
+      if (fileSize > 500 * 1024 * 1024) {
         return res.status(400).json({
           error: "File too large",
-          details: `File ${file.fileName} exceeds 500MB limit`,
+          details: `File ${fileName} (${(fileSize / 1024 / 1024).toFixed(2)}MB) exceeds 500MB limit`,
         });
       }
     }
