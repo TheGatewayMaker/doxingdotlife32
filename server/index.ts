@@ -56,27 +56,45 @@ export function createServer() {
       res: express.Response,
       next: express.NextFunction,
     ) => {
+      const isJsonRequest = req.headers["content-type"]?.includes("application/json");
+
       // If body is a string (happens in some serverless scenarios), parse it
       if (
         req.body &&
         typeof req.body === "string" &&
-        req.headers["content-type"]?.includes("application/json")
+        isJsonRequest
       ) {
         try {
           console.log(
-            `[${new Date().toISOString()}] Body is a string, attempting to parse JSON...`,
+            `[${new Date().toISOString()}] ⚠️ Body is a string, attempting to parse JSON...`,
           );
-          req.body = JSON.parse(req.body);
+          const parsed = JSON.parse(req.body);
+          req.body = parsed;
           console.log(
-            `[${new Date().toISOString()}] Successfully parsed JSON string body`,
+            `[${new Date().toISOString()}] ✅ Successfully parsed JSON string body`,
           );
         } catch (e) {
           console.error(
-            `[${new Date().toISOString()}] Failed to parse JSON string body:`,
-            e,
+            `[${new Date().toISOString()}] ❌ Failed to parse JSON string body:`,
+            e instanceof Error ? e.message : String(e),
           );
+          // Don't stop, express.json() might have already parsed it
         }
       }
+
+      // Log body parsing for API endpoints
+      if (req.path.startsWith("/api/") && isJsonRequest) {
+        console.log(`[${new Date().toISOString()}] API Request ${req.method} ${req.path}:`, {
+          contentType: req.headers["content-type"],
+          contentLength: req.headers["content-length"],
+          bodyType: typeof req.body,
+          bodyKeys: req.body && typeof req.body === "object" ? Object.keys(req.body) : "N/A",
+          bodyPreview: req.body
+            ? JSON.stringify(req.body).substring(0, 200)
+            : "empty",
+        });
+      }
+
       next();
     },
   );
