@@ -207,18 +207,37 @@ export default function UppostPanel() {
       // Step 1: Generate presigned URLs for all files
       setUploadMessage("Preparing upload URLs...");
 
+      if (!thumbnail) {
+        throw new Error("Thumbnail is missing before URL generation");
+      }
+
+      if (mediaFiles.length === 0) {
+        throw new Error("Media files array is empty before URL generation");
+      }
+
       const filesForPresignedUrls = [
         {
           fileName: `thumbnail-${Date.now()}`,
           contentType: thumbnail.type || "image/jpeg",
           fileSize: thumbnail.size,
         },
-        ...mediaFiles.map((file, idx) => ({
+        ...mediaFiles.map((file) => ({
           fileName: file.name,
           contentType: file.type || "application/octet-stream",
           fileSize: file.size,
         })),
       ];
+
+      console.log("[UppostPanel] Files array before sending:", {
+        totalFiles: filesForPresignedUrls.length,
+        thumbnailFile: filesForPresignedUrls[0],
+        mediaFilesCount: mediaFiles.length,
+        allFiles: filesForPresignedUrls,
+      });
+
+      if (!Array.isArray(filesForPresignedUrls) || filesForPresignedUrls.length === 0) {
+        throw new Error("Files array is empty or invalid");
+      }
 
       const urlsResponse = await generatePresignedUrls(
         filesForPresignedUrls,
