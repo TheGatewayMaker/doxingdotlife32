@@ -56,14 +56,11 @@ export function createServer() {
       res: express.Response,
       next: express.NextFunction,
     ) => {
-      const isJsonRequest = req.headers["content-type"]?.includes("application/json");
+      const isJsonRequest =
+        req.headers["content-type"]?.includes("application/json");
 
       // If body is a string (happens in some serverless scenarios), parse it
-      if (
-        req.body &&
-        typeof req.body === "string" &&
-        isJsonRequest
-      ) {
+      if (req.body && typeof req.body === "string" && isJsonRequest) {
         try {
           console.log(
             `[${new Date().toISOString()}] ⚠️ Body is a string, attempting to parse JSON...`,
@@ -84,15 +81,21 @@ export function createServer() {
 
       // Log body parsing for API endpoints
       if (req.path.startsWith("/api/") && isJsonRequest) {
-        console.log(`[${new Date().toISOString()}] API Request ${req.method} ${req.path}:`, {
-          contentType: req.headers["content-type"],
-          contentLength: req.headers["content-length"],
-          bodyType: typeof req.body,
-          bodyKeys: req.body && typeof req.body === "object" ? Object.keys(req.body) : "N/A",
-          bodyPreview: req.body
-            ? JSON.stringify(req.body).substring(0, 200)
-            : "empty",
-        });
+        console.log(
+          `[${new Date().toISOString()}] API Request ${req.method} ${req.path}:`,
+          {
+            contentType: req.headers["content-type"],
+            contentLength: req.headers["content-length"],
+            bodyType: typeof req.body,
+            bodyKeys:
+              req.body && typeof req.body === "object"
+                ? Object.keys(req.body)
+                : "N/A",
+            bodyPreview: req.body
+              ? JSON.stringify(req.body).substring(0, 200)
+              : "empty",
+          },
+        );
       }
 
       next();

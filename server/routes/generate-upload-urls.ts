@@ -28,9 +28,7 @@ export const handleGenerateUploadUrls: RequestHandler = async (
       `[${new Date().toISOString()}] === 📤 GENERATE UPLOAD URLS REQUEST ===`,
     );
     console.log(`[${new Date().toISOString()}] Request method: ${req.method}`);
-    console.log(
-      `[${new Date().toISOString()}] Request path: ${req.path}`,
-    );
+    console.log(`[${new Date().toISOString()}] Request path: ${req.path}`);
     console.log(
       `[${new Date().toISOString()}] Content-Type header: ${req.headers["content-type"]}`,
     );
@@ -42,7 +40,9 @@ export const handleGenerateUploadUrls: RequestHandler = async (
     );
 
     if (!req.body) {
-      console.error(`[${new Date().toISOString()}] ❌ REQUEST BODY IS EMPTY/NULL`);
+      console.error(
+        `[${new Date().toISOString()}] ❌ REQUEST BODY IS EMPTY/NULL`,
+      );
       return res.status(400).json({
         error: "Invalid request",
         details: "Request body is empty",
@@ -54,15 +54,23 @@ export const handleGenerateUploadUrls: RequestHandler = async (
     );
 
     if (typeof req.body === "string") {
-      console.warn(`[${new Date().toISOString()}] ⚠️ Body is still a string, attempting parse...`);
+      console.warn(
+        `[${new Date().toISOString()}] ⚠️ Body is still a string, attempting parse...`,
+      );
       try {
         req.body = JSON.parse(req.body);
-        console.log(`[${new Date().toISOString()}] ✅ Successfully parsed string body`);
+        console.log(
+          `[${new Date().toISOString()}] ✅ Successfully parsed string body`,
+        );
       } catch (parseErr) {
-        console.error(`[${new Date().toISOString()}] ❌ Failed to parse string body:`, parseErr);
+        console.error(
+          `[${new Date().toISOString()}] ❌ Failed to parse string body:`,
+          parseErr,
+        );
         return res.status(400).json({
           error: "Invalid JSON in request body",
-          details: parseErr instanceof Error ? parseErr.message : "JSON parse error",
+          details:
+            parseErr instanceof Error ? parseErr.message : "JSON parse error",
         });
       }
     }
@@ -82,14 +90,17 @@ export const handleGenerateUploadUrls: RequestHandler = async (
     }
 
     if (!files || !Array.isArray(files) || files.length === 0) {
-      console.error(`[${new Date().toISOString()}] ❌ FILES VALIDATION FAILED:`, {
-        hasFilesProperty: "files" in (req.body || {}),
-        filesValue: req.body?.files,
-        isArray: Array.isArray(files),
-        length: files?.length,
-        allBodyKeys: Object.keys(req.body || {}),
-        fullBody: JSON.stringify(req.body),
-      });
+      console.error(
+        `[${new Date().toISOString()}] ❌ FILES VALIDATION FAILED:`,
+        {
+          hasFilesProperty: "files" in (req.body || {}),
+          filesValue: req.body?.files,
+          isArray: Array.isArray(files),
+          length: files?.length,
+          allBodyKeys: Object.keys(req.body || {}),
+          fullBody: JSON.stringify(req.body),
+        },
+      );
       return res.status(400).json({
         error: "Invalid request",
         details: "files array is required and must contain at least one file",
@@ -126,14 +137,23 @@ export const handleGenerateUploadUrls: RequestHandler = async (
         });
       }
 
-      if (!contentType || typeof contentType !== "string" || contentType.trim() === "") {
+      if (
+        !contentType ||
+        typeof contentType !== "string" ||
+        contentType.trim() === ""
+      ) {
         return res.status(400).json({
           error: "Invalid file metadata",
           details: `File ${i} (${fileName}): contentType must be a non-empty string. Received: ${JSON.stringify(contentType)}`,
         });
       }
 
-      if (fileSize === undefined || fileSize === null || typeof fileSize !== "number" || fileSize <= 0) {
+      if (
+        fileSize === undefined ||
+        fileSize === null ||
+        typeof fileSize !== "number" ||
+        fileSize <= 0
+      ) {
         return res.status(400).json({
           error: "Invalid file metadata",
           details: `File ${i} (${fileName}): fileSize must be a positive number. Received: ${JSON.stringify(fileSize)}`,

@@ -235,7 +235,10 @@ export default function UppostPanel() {
         allFiles: filesForPresignedUrls,
       });
 
-      if (!Array.isArray(filesForPresignedUrls) || filesForPresignedUrls.length === 0) {
+      if (
+        !Array.isArray(filesForPresignedUrls) ||
+        filesForPresignedUrls.length === 0
+      ) {
         throw new Error("Files array is empty or invalid");
       }
 
