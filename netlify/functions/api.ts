@@ -60,8 +60,6 @@ const getServerlessHandler = () => {
         "video/*",
         "application/octet-stream",
         "multipart/*",
-        "application/x-www-form-urlencoded",
-        "*/*",
       ],
       request: (request: any, event: any, context: any) => {
         // Log request details for debugging
