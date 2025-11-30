@@ -25,34 +25,60 @@ export const generatePresignedUrls = async (
   files: FileMetadata[],
   idToken: string,
 ): Promise<GenerateUrlsResponse> => {
+  const requestBody = {
+    files,
+  };
+
+  console.log("[FRONTEND] Generating presigned URLs with files:", {
+    filesCount: files.length,
+    files: files.map((f) => ({
+      fileName: f.fileName,
+      contentType: f.contentType,
+      fileSize: f.fileSize,
+    })),
+    requestBody: requestBody,
+    requestBodyJSON: JSON.stringify(requestBody),
+  });
+
   const response = await fetch("/api/generate-upload-urls", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${idToken}`,
     },
-    body: JSON.stringify({
-      files,
-    }),
+    body: JSON.stringify(requestBody),
   });
+
+  console.log("[FRONTEND] Response status:", response.status);
 
   if (!response.ok) {
     let errorMsg = "Failed to generate upload URLs";
+    let errorDetails: any;
     try {
       const errorData = await response.json();
+      errorDetails = errorData;
       if (errorData.error) {
         errorMsg = errorData.error;
       }
       if (errorData.details) {
         errorMsg += `: ${errorData.details}`;
       }
+      if (errorData.debug) {
+        console.error("[FRONTEND] Backend debug info:", errorData.debug);
+      }
     } catch {
       errorMsg = `HTTP ${response.status}: ${response.statusText}`;
     }
+    console.error("[FRONTEND] Generate URLs error:", errorDetails);
     throw new Error(errorMsg);
   }
 
-  return response.json();
+  const responseData = await response.json();
+  console.log("[FRONTEND] Got presigned URLs response:", {
+    postId: responseData.postId,
+    urlCount: responseData.presignedUrls.length,
+  });
+  return responseData;
 };
 
 export const uploadFileToR2 = async (
