@@ -49,6 +49,21 @@ export function createServer() {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+  // Debugging middleware to handle potential body parsing issues in serverless environments
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    // If body is a string (happens in some serverless scenarios), parse it
+    if (req.body && typeof req.body === "string" && req.headers["content-type"]?.includes("application/json")) {
+      try {
+        console.log(`[${new Date().toISOString()}] Body is a string, attempting to parse JSON...`);
+        req.body = JSON.parse(req.body);
+        console.log(`[${new Date().toISOString()}] Successfully parsed JSON string body`);
+      } catch (e) {
+        console.error(`[${new Date().toISOString()}] Failed to parse JSON string body:`, e);
+      }
+    }
+    next();
+  });
+
   // Error handling for body parsing
   app.use(
     (
